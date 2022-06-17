@@ -26,62 +26,62 @@ function cambio() {
 
 // Los datos extraidos del metodo fetch se guardarán en el array detalle
 const detalle = await fetch("https://pokeapi.co/api/v2/pokemon/" + id)
+  .then((response) => response.json())
+  .then((data) => {
+    for (let paso = 0; paso < data.types.length; paso++) {
+      colorTipo.push(data.types[paso].type.name);
+    }
+    data.stats.forEach(stat => {
+      stats.push(stat.base_stat);
+    })
+    for (let mov = 0; mov < 3; mov++) {
+      urlmov.push(data.moves[mov].move.url);
+    }
+    return data;
+  })
+  .catch((error) => (console.error(error.message)))
+
+for (let paso = 0; paso < 3; paso++) {
+  const movimientos = await fetch(urlmov[paso])
     .then((response) => response.json())
     .then((data) => {
-        for (let paso = 0; paso < data.types.length; paso++) {
-            colorTipo.push(data.types[paso].type.name);
-        }
-        data.stats.forEach(stat => {
-            stats.push(stat.base_stat);
-        })
-        for (let mov = 0; mov < 3; mov++){
-            urlmov.push(data.moves[mov].move.url);
-        }
-        return data;
+      if (data.power == "" || data.power == null) {
+        poderesNombre.push(data.name);
+        poderes.push("-");
+        var tor = {
+          poderesNombre: poderesNombre,
+          poderes: poderes
+        };
+      } else {
+        poderesNombre.push(data.name);
+        poderes.push(data.power);
+        var tor = {
+          poderesNombre: poderesNombre,
+          poderes: poderes
+        };
+      }
+      todopoder.push(tor);
     })
-    .catch((error) => (console.error(error.message)))
-
-for(let paso=0; paso<3; paso++){
-    const movimientos = await fetch(urlmov[paso])
-        .then( (response) => response.json() )
-        .then( (data) => {
-            if(data.power == "" || data.power==null){
-                poderesNombre.push(data.name);
-                poderes.push("-");
-                var tor = {
-                    poderesNombre:poderesNombre,
-                    poderes:poderes
-                };
-            }else{
-                poderesNombre.push(data.name);
-                poderes.push(data.power);
-                var tor = {
-                    poderesNombre:poderesNombre,
-                    poderes:poderes
-                };
-            }
-            todopoder.push(tor);
-        })
     .catch((error) => (console.error(error.message)))
 }
 
 const dataEspecie = await fetch("https://pokeapi.co/api/v2/pokemon-species/" + id)
-    .then((response) => response.json())
-    .then((res) => {
-      color = ("var(--" + res.color.name + ")");
-      genera = res.genera[5].genus;
-      if (res.varieties.length < 2) {
-        for (let i = 0; i < res.varieties.length; i++) {
-          formas.push(res.varieties[i].pokemon.name);
-        }
-      } else {
-        for (let i = 0; i < 2; i++) {
-          formas.push(res.varieties[i].pokemon.name);
-        }
-
+  .then((response) => response.json())
+  .then((res) => {
+    color = ("var(--" + res.color.name + ")");
+    genera = res.genera[5].genus;
+    if (res.varieties.length < 2) {
+      for (let i = 0; i < res.varieties.length; i++) {
+        formas.push(res.varieties[i].pokemon.name);
       }
-      return res;
-    })
+    } else {
+      for (let i = 0; i < 2; i++) {
+        formas.push(res.varieties[i].pokemon.name);
+      }
+
+    }
+    return res;
+  })
 
 const findMax = arr => {
   let max = arr[0];
@@ -100,10 +100,10 @@ stats.forEach(stat => {
 
 const sonar = () => {
   document.getElementById("sound").disabled = true;
-  if(id<=721){
-    var audio = new Audio("./cries/"+id+".mp3");
-  }else{
-    var audio = new Audio("./cries/"+id+".wav");
+  if (id <= 721) {
+    var audio = new Audio("./cries/" + id + ".mp3");
+  } else {
+    var audio = new Audio("./cries/" + id + ".wav");
   }
   audio.play();
   setTimeout(() => {
@@ -112,16 +112,20 @@ const sonar = () => {
 }
 
 onMounted(() => {
-  if(id<=802){
-    document.getElementById("sound").addEventListener("click", sonar);  
-  }else{
-    document.getElementById("sound").style.display="none";
+  if (id <= 802) {
+    document.getElementById("sound").addEventListener("click", sonar);
+  } else {
+    document.getElementById("sound").style.display = "none";
   }
 })
 </script>
 
 <template>
-  <div class="container">
+  <nav class="bg-color flex">
+    <a :href="$router.resolve({name: 'Home'}).href"><i class="fa-solid  fa-2x fa-arrow-left px-3 white"></i></a>
+    <img alt="Vue logo" src="/logo_black.png" id="logo" class="logo-detalle" />
+  </nav>
+  <div class="container mt-5">
     <div class="row justify-content-center">
       <h1 class="text-capitalize">
         {{ detalle.name }}
@@ -130,109 +134,100 @@ onMounted(() => {
         </button>
       </h1>
       <div>
-        <span class="text-capitalize text-white bg-color rounded-3 p-1 no-cursor">{{ genera }}</span>
+        <span class="text-capitalize text-white bg-color rounded-3 p-1">{{ genera }}</span>
       </div>
-            <div class="col-12 col-lg-4 mt-3">
-                <div class="table-responsive ps-5">
-                    <table class="table">
-                        <tr>
-                            <th class="text-end">ID</th>
-                            <td class="text-start ps-4">{{'#'+ id }}</td>
-                        </tr>
-                        <tr>
-                            <th class="text-end">Altura</th>
-                            <td class="text-start ps-4">{{ detalle.height / 10 }}m</td>
-                        </tr>
-                        <tr>
-                            <th class="text-end">Peso</th>
-                            <td class="text-start ps-4">{{ detalle.weight / 10 }}kg</td>
-                        </tr>
-                        <tr>
-                            <th class="text-end">Habilidades</th>
-                            <td class="text-start ps-3">
-                                <span  v-for="habilidad in detalle.abilities" :key="id" class="text-white bg-color rounded-3 mx-1 no-cursor">{{ habilidad.ability.name }}</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="text-end">Tipo</th>
-                            <td class="text-start ps-3">
-                                <span v-for="tipo in detalle.types" :key="id"
-                                    :class="tipo.type.name"
-                                    class="text-white px-3 mx-1 rounded-3 text-capitalize"
-                                >{{ tipo.type.name }}</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th class="text-end">Forma</th>
-                            <td class="text-start ps-3">
-                                <span v-for="forma in formas" :key="id">{{ forma }}</span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-4 justify-content-center">
-                <div class="card border-0">
-                    <div class="scene">
-                        <div class="cardd cursor" @click="cambio">
-                            <div id="fron" class="cardd__face cardd__face--front">
-                                <div class="cardd border-0">
-                                    <div class="card-body">
-                                        <img
-                                            :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + id + '.png'"
-                                            :alt="'foto de ' + detalle.name"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="ba" class="cardd__face cardd__face--back">
-                                <div class="fs-3">Ataques especiales</div>
-                                <div class="table-responsive">
-                                    <table class="table">
-                                        <tbody>
-                                            <tr v-for="(movimiento, index) in todopoder" >
-                                                <td>{{movimiento.poderesNombre[index]}}</td>
-                                                <td>{{movimiento.poderes[index]}}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-12 col-lg-4 mt-5">
-                <div class="row" v-for="(stat, index) in stats" :key="index">
-                    <label class="col-4 text-end pe-3">{{ nombreStats[index] }}</label>
-                    <div class="progress col-8">
-                        <div
-                            class="progress-bar progress-bar-striped progress-bar-animated"
-                            id="prueba"
-                            role="progressbar"
-                            aria-valuenow="45"
-                            aria-valuemin="0"
-                            aria-valuemax="65"
-                            :style="porcentajes[index]"
-                        >{{ stat }}</div>
-                    </div>
-                </div>
-            </div>
-
-            <Cadena :urlCadena="dataEspecie.evolution_chain.url" :id="id"/>
+      <div class="col-12 col-lg-4 mt-3">
+        <div class="table-responsive ps-5">
+          <table class="table">
+            <tr>
+              <th class="text-end">ID</th>
+              <td class="text-start ps-4">{{ '#' + id }}</td>
+            </tr>
+            <tr>
+              <th class="text-end">Altura</th>
+              <td class="text-start ps-4">{{ detalle.height / 10 }}m</td>
+            </tr>
+            <tr>
+              <th class="text-end">Peso</th>
+              <td class="text-start ps-4">{{ detalle.weight / 10 }}kg</td>
+            </tr>
+            <tr>
+              <th class="text-end">Habilidades</th>
+              <td class="text-start ps-3">
+                <span v-for="habilidad in detalle.abilities" :key="id" class="text-white bg-color rounded-3 mx-1">{{
+                    habilidad.ability.name
+                }}</span>
+              </td>
+            </tr>
+            <tr>
+              <th class="text-end">Tipo</th>
+              <td class="text-start ps-3">
+                <span v-for="tipo in detalle.types" :key="id" :class="tipo.type.name"
+                  class="text-white px-3 mx-1 rounded-3 text-capitalize">{{ tipo.type.name }}</span>
+              </td>
+            </tr>
+            <tr>
+              <th class="text-end">Forma</th>
+              <td class="text-start ps-3">
+                <span v-for="forma in formas" :key="id">{{ forma }}</span>
+              </td>
+            </tr>
+          </table>
         </div>
+      </div>
+
+      <div class="col-12 col-lg-4 justify-content-center">
+        <div class="card border-0">
+          <div class="scene">
+            <div class="cardd cursor" @click="cambio">
+              <div id="fron" class="cardd__face cardd__face--front">
+                <div class="cardd border-0">
+                  <div class="card-body">
+                    <img
+                      :src="'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/' + id + '.png'"
+                      :alt="'foto de ' + detalle.name" />
+                  </div>
+                </div>
+              </div>
+              <div id="ba" class="cardd__face cardd__face--back">
+                <div class="fs-3">Ataques especiales</div>
+                <div class="table-responsive">
+                  <table class="table">
+                    <tbody>
+                      <tr v-for="(movimiento, index) in todopoder">
+                        <td>{{ movimiento.poderesNombre[index] }}</td>
+                        <td>{{ movimiento.poderes[index] }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-4 mt-5">
+        <div class="row" v-for="(stat, index) in stats" :key="index">
+          <label class="col-4 text-end pe-3">{{ nombreStats[index] }}</label>
+          <div class="progress col-8">
+            <div class="progress-bar progress-bar-striped progress-bar-animated" id="prueba" role="progressbar"
+              aria-valuenow="45" aria-valuemin="0" aria-valuemax="65" :style="porcentajes[index]">{{ stat }}</div>
+          </div>
+        </div>
+      </div>
+
+      <Cadena :urlCadena="dataEspecie.evolution_chain.url" :id="id" />
     </div>
+  </div>
 </template>
 <style scoped>
 td {
-    padding-top: 0.5rem;
-    padding-bottom: 0.50rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.50rem;
 }
-
-.no-cursor{
-  cursor: default;
+.white{
+  color: #fff;
 }
 .card {
   border: solid 2px #dddddd;
@@ -270,6 +265,7 @@ thead {
   transition: transform 1s;
   transform-style: preserve-3d;
 }
+
 .cursor:hover {
   cursor: pointer;
 }
@@ -288,6 +284,7 @@ thead {
   width: 100%;
   max-height: auto;
 }
+
 .progress-bar,
 .bg-color {
   background-color: v-bind("color") !important;
@@ -303,6 +300,14 @@ thead {
 
 #sound:hover {
   color: black;
+}
+.flex{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.logo-detalle{
+  max-width: 40%;
 }
 
 @media (max-width: 768px) {

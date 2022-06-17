@@ -3,6 +3,7 @@ import {defineAsyncComponent, reactive} from 'vue';
 import Loading from '../components/Loading.vue'
 import {onMounted} from "vue";
 import axios from "axios";
+import Navbar from '../components/Navbar.vue';
 
 onMounted(() => {
   loadFirstPokemons();
@@ -51,6 +52,7 @@ const PokemonCard = defineAsyncComponent({
 </script>
 
 <template>
+<Navbar></Navbar>
   <div class="card-container">
     <PokemonCard v-for="pokemon in allPokemons" :id="pokemon.id" :key="pokemon.id"></PokemonCard>
   </div>
