@@ -3,6 +3,8 @@ const props = defineProps(['id'])
 const id = props.id
 const tipos = []
 
+var color = "";
+
 const detalle = await fetch("https://pokeapi.co/api/v2/pokemon/" + id)
     .then((response) => response.json())
     .then((data) => {
@@ -14,13 +16,24 @@ const detalle = await fetch("https://pokeapi.co/api/v2/pokemon/" + id)
       return data
     })
     .catch((error) => (console.error(error.message)))
+
+//buscamos la especie para añadir el color de su especie
+const dataEspecie = await fetch("https://pokeapi.co/api/v2/pokemon-species/" + id)
+    .then((response) => response.json())
+    .then((res) => {
+      color = ("var(--" + res.color.name + ")");
+      return res;
+    })
+
+
 </script>
 
 <template>
   <div class="card">
     <a :href="$router.resolve({name: 'Detalle', params: {id: id}}).href">
       <div class="card-header">
-        <span>{{ id }}</span>
+        <!-- le añadimos la clase con el color de la especie -->
+        <span class="bg-color">{{ id }}</span>
         <h1>{{ detalle.name }}</h1>
       </div>
       <div class="card-body">
@@ -73,7 +86,7 @@ span {
   background-color: silver;
   color: white;
   font-size: 3rem;
-  width: 25%;
+  width: 30%;
   border-bottom-right-radius: 50%;
 }
 
@@ -103,7 +116,12 @@ a:hover .pokemon {
 
 .tipos {
   transition: box-shadow 1s;
-  width: 25%;
+  width: 20%;
   max-height: auto;
 }
+
+.bg-color {
+  background-color: v-bind("color") !important;
+}
+
 </style>

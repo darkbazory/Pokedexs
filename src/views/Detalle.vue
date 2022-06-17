@@ -24,7 +24,7 @@ function cambio() {
   carta.classList.toggle('is-flipped');
 }
 
-// Los datos extraidos del metodo fetch se guardarán en la array detalle
+// Los datos extraidos del metodo fetch se guardarán en el array detalle
 const detalle = await fetch("https://pokeapi.co/api/v2/pokemon/" + id)
     .then((response) => response.json())
     .then((data) => {
@@ -130,42 +130,42 @@ onMounted(() => {
         </button>
       </h1>
       <div>
-        <span class="text-capitalize text-white bg-color rounded-3 p-1">{{ genera }}</span>
+        <span class="text-capitalize text-white bg-color rounded-3 p-1 no-cursor">{{ genera }}</span>
       </div>
             <div class="col-12 col-lg-4 mt-3">
-                <div class="table-responsive">
+                <div class="table-responsive ps-5">
                     <table class="table">
                         <tr>
                             <th class="text-end">ID</th>
-                            <td>{{ id }}</td>
+                            <td class="text-start ps-4">{{'#'+ id }}</td>
                         </tr>
                         <tr>
                             <th class="text-end">Altura</th>
-                            <td>{{ detalle.height / 10 }}m</td>
+                            <td class="text-start ps-4">{{ detalle.height / 10 }}m</td>
                         </tr>
                         <tr>
                             <th class="text-end">Peso</th>
-                            <td>{{ detalle.weight / 10 }}kg</td>
+                            <td class="text-start ps-4">{{ detalle.weight / 10 }}kg</td>
                         </tr>
                         <tr>
                             <th class="text-end">Habilidades</th>
-                            <td v-for="habilidad in detalle.abilities" :key="id">
-                                <span class="text-white bg-color rounded-3 px-4">{{ habilidad.ability.name }}</span>
+                            <td class="text-start ps-3">
+                                <span  v-for="habilidad in detalle.abilities" :key="id" class="text-white bg-color rounded-3 mx-1 no-cursor">{{ habilidad.ability.name }}</span>
                             </td>
                         </tr>
                         <tr>
                             <th class="text-end">Tipo</th>
-                            <td v-for="tipo in detalle.types" :key="id">
-                                <span
+                            <td class="text-start ps-3">
+                                <span v-for="tipo in detalle.types" :key="id"
                                     :class="tipo.type.name"
-                                    class="text-white px-4 rounded-3 text-capitalize"
+                                    class="text-white px-3 mx-1 rounded-3 text-capitalize"
                                 >{{ tipo.type.name }}</span>
                             </td>
                         </tr>
                         <tr>
                             <th class="text-end">Forma</th>
-                            <td v-for="forma in formas" :key="id">
-                                <span>{{ forma }}</span>
+                            <td class="text-start ps-3">
+                                <span v-for="forma in formas" :key="id">{{ forma }}</span>
                             </td>
                         </tr>
                     </table>
@@ -175,7 +175,7 @@ onMounted(() => {
             <div class="col-12 col-lg-4 justify-content-center">
                 <div class="card border-0">
                     <div class="scene">
-                        <div class="cardd" @click="cambio">
+                        <div class="cardd cursor" @click="cambio">
                             <div id="fron" class="cardd__face cardd__face--front">
                                 <div class="cardd border-0">
                                     <div class="card-body">
@@ -231,6 +231,9 @@ td {
     padding-bottom: 0.50rem;
 }
 
+.no-cursor{
+  cursor: default;
+}
 .card {
   border: solid 2px #dddddd;
   transition: 0.4s;
@@ -266,6 +269,9 @@ thead {
   position: relative;
   transition: transform 1s;
   transform-style: preserve-3d;
+}
+.cursor:hover {
+  cursor: pointer;
 }
 
 #ba {
