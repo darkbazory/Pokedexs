@@ -10,3 +10,5 @@ This template should help get you started developing with Vue 3 in Vite. The tem
 
 # Iniciar el servidor
 - Para iniciar el servidor ejecutad el comando `npm run dev` que va a funcionar como un `npm run watch` y os va a abrir el servidor.
+
+https://darkbazory.github.io/Pokedexs/
